@@ -14,7 +14,9 @@ class OrderRepository implements RepositoryInterface
         $orders = [];
 
         $row = 0;
-        if (($handle = fopen('orders.csv', 'r')) !== false) {
+        $handle = fopen('orders.csv', 'r');
+
+        if ($handle !== false) {
             while (($data = fgetcsv($handle)) !== false) {
                 $row++;
 
@@ -23,7 +25,10 @@ class OrderRepository implements RepositoryInterface
                 }
 
                 $order = new Order(
-                    (int)$data[0], (int)$data[1], (int)$data[2], $data[3],
+                    (int)$data[0],
+                    (int)$data[1],
+                    (int)$data[2],
+                    $data[3],
                 );
 
                 $orders[] = $order;

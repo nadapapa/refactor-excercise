@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Controllers;
@@ -33,7 +34,7 @@ class OrderController
             return $pc == 0 ? $a->getCreatedAt() <=> $b->getCreatedAt() : $pc;
         });
 
-        $filteredOrders = array_filter($orders, function(Order $order) use ($stocks) {
+        $filteredOrders = array_filter($orders, function (Order $order) use ($stocks) {
             if (isset($stocks[$order->getProductId()])) {
                 return $stocks[$order->getProductId()] >= $order->getQuantity();
             }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-Abstract class AbstractModel
+abstract class AbstractModel
 {
     public function getAttribute(string $key): mixed
     {

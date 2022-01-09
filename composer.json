@@ -38,9 +38,9 @@
         "static": ["@syntax", "@php-cpd", "@php-cs", "@php-md", "@schema"],
         "schema": "@php artisan lighthouse:validate-schema",
         "syntax": "find ./app ./database ./tests -type f -name \"*.php\" -print0 | xargs -0 -n1 -P8 php -l",
-        "php-cs": "@php vendor/bin/phpcs app/ --standard=phpcs_ruleset.xml",
-        "php-cbf": "@php vendor/bin/phpcbf app/ --standard=phpcs_ruleset.xml",
-        "php-md": "@php vendor/bin/phpmd app text phpmd_ruleset.xml || exit 1",
+        "php-cs": "@php vendor/bin/phpcs app/ --standard=PSR12",
+        "php-cbf": "@php vendor/bin/phpcbf app/ --standard=PSR12",
+        "php-md": "@php vendor/bin/phpmd app text cleancode, codesize, controversial, design, naming, unusedcode",
         "php-cpd": "@php vendor/bin/phpcpd --fuzzy app/"
     }
 }

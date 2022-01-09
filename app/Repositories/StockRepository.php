@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\Interfaces\RepositoryInterface;
+use InvalidArgumentException;
 
 class StockRepository implements RepositoryInterface
 {
@@ -15,17 +16,15 @@ class StockRepository implements RepositoryInterface
         $this->arguments = $argv;
     }
 
+    /**
+     * @throws \JsonException
+     */
     public function getAll(): array
     {
         if (count($this->arguments) != 2) {
-            echo 'Ambiguous number of parameters!';
-            return [];
+            throw new InvalidArgumentException('Ambiguous number of parameters!');
         }
 
-        if (($stock = json_decode($this->arguments[1], true)) == null) {
-            return [];
-        }
-
-        return $stock;
+        return json_decode($this->arguments[1], true, flags: JSON_THROW_ON_ERROR);
     }
 }
