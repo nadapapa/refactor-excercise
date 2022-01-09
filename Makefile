@@ -1,9 +1,8 @@
 .SILENT:
 .PHONY: help
 
-
-DOCKER_PHP_RUN = docker run -it --rm --name refactor-excercise -v $(shell pwd):/refactor-excercise -w /refactor-excercise php:8.1-cli
-DOCKER_COMPOSER_RUN = docker run -it --rm --name refactor-excercise -v $(shell pwd):/refactor-excercise -w /refactor-excercise composer:2.2.3
+DOCKER_PHP = refactor-exercise-php
+DOCKER_PHP_RUN = docker run -it --rm --name refactor-excercise -v $(shell pwd):/refactor-excercise -w /refactor-excercise $(DOCKER_PHP)
 
 ## This help screen
 help:
@@ -18,12 +17,6 @@ help:
 	} \
 	{ lastLine = $$0 }' $(MAKEFILE_LIST)
 
-### Setup application
-#setup: create-vendor-dir
-#	@echo "\n\033[92mSetup completed\033[0m\n"
-#	@echo "Laravel Horizon Dashboard (for queues):"
-#	@echo "  \033[93m$(HORIZON_URL)\033[0m\n"
-
 ## Create vendor directory
 create-vendor-dir:
 	mkdir -p ./vendor
@@ -33,16 +26,23 @@ clean:
 	@sudo rm -rf vendor/
 
 ## Install vendor packages
-composer-install:
+composer-install: docker-build
 	$(DOCKER_COMPOSER_RUN) /bin/sh -c "composer install --no-interaction"
 
 ## Update vendor packages
-composer-update:
+composer-update: docker-build
 	$(DOCKER_COMPOSER_RUN) /bin/sh -c "composer update --no-interaction"
 
+## Update vendor packages
+composer-autoload: docker-build
+	$(DOCKER_COMPOSER_RUN) /bin/sh -c "composer dump-autoload"
+
 ## Login to php container
-cli-php:
-	$(DOCKER_PHP_RUN) sh
+cli-php: docker-build
+	$(DOCKER_PHP_RUN) bash
+
+docker-build:
+	docker build -t $(DOCKER_PHP) .
 
 ## Run all static tests and checks
 static-tests: php-syntax php-cpd php-cs php-md
@@ -81,6 +81,6 @@ php-cpd:
 test:
 	@echo "\n\033[93mRun PHPUnit\033[0m"
 	if  [ -z $(group) ]; \
-	then $(DOCKER_PHP_RUN) /bin/sh -c "./vendor/bin/phpunit --order-by=defects --stop-on-failure"; \
-	else $(DOCKER_PHP_RUN) /bin/sh -c "./vendor/bin/phpunit --order-by=defects --stop-on-failure --group $(group)"; \
+	then $(DOCKER_PHP_RUN) /bin/sh -c "./vendor/bin/phpunit --order-by=defects --stop-on-failure --coverage-text tests"; \
+	else $(DOCKER_PHP_RUN) /bin/sh -c "./vendor/bin/phpunit --order-by=defects --stop-on-failure --coverage-text --group $(group) tests"; \
 	fi;

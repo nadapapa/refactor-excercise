@@ -16,7 +16,10 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
     },
     "autoload": {
         "psr-4": {
@@ -31,7 +34,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "scripts": {
-        "test": "./vendor/bin/phpunit --order-by=defects --stop-on-failure",
+        "test": "./vendor/bin/phpunit --order-by=defects --stop-on-failure tests",
         "static": ["@syntax", "@php-cpd", "@php-cs", "@php-md", "@schema"],
         "schema": "@php artisan lighthouse:validate-schema",
         "syntax": "find ./app ./database ./tests -type f -name \"*.php\" -print0 | xargs -0 -n1 -P8 php -l",
